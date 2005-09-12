@@ -24,6 +24,18 @@ dnl check to make sure that this version of bicpl contains the additions
 dnl from what used to be libdavid
 AC_CHECK_HEADER(bicpl/deform.h,,AC_MSG_ERROR([cannot find deform.h - make sure you have bicpl 1.4.0 or later]))
 
+# time to hunt for OpenGL
+AX_CHECK_GL
+AX_CHECK_GLU
+AX_CHECK_GLUT
+
+AC_SUBST(GL_LIBS)
+AC_SUBST(GL_CFLAGS)
+AC_SUBST(GLU_LIBS)
+AC_SUBST(GLU_CFLAGS)
+AC_SUBST(GLUT_LIBS)
+AC_SUBST(GLUT_CFLAGS)
+
 
 AC_CONFIG_FILES([Makefile
 Graphics/Makefile
