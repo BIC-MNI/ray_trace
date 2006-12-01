@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
+AC_INIT([ray_trace],[1.0.1],[David McDonald])
 AC_CONFIG_SRCDIR([ray_trace.c])
-AM_INIT_AUTOMAKE(ray_trace, 1.0)
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE
+
+AM_CONFIG_HEADER([config.h])
 
 smr_WITH_BUILD_PATH
 
@@ -42,5 +43,6 @@ Graphics/Makefile
 Graphics/GLUT_windows/Makefile
 Graphics/G_graphics/Makefile
 Graphics/OpenGL_graphics/Makefile])
-AC_OUTPUT
+
+AC_OUTPUT(epm-header)
 

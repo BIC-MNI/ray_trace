@@ -17,7 +17,7 @@ EXTRA_DIST = m4/mni_cxx_have_koenig_lookup.m4 \
 	Include/ray_trace.h \
 	Include/ray_trace_prototypes.h \
 	Documentation/ray_trace_tutorial.html \
-	mni_ray_trace.epm.header
+	epm-header.in
 
 
 INCLUDES = -I$(top_srcdir)/Include \
