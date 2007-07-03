@@ -3,6 +3,17 @@
 
 #define  GRAY_STRING                "-gray"
 #define  HOT_STRING                 "-hot"
+#define  HOT_NEG_STRING             "-hot_inv"
+#define  COLD_METAL_STRING          "-cold_metal"
+#define  COLD_METAL_NEG_STRING      "-cold_metal_inv"
+#define  GREEN_METAL_STRING         "-green_metal"
+#define  GREEN_METAL_NEG_STRING     "-green_metal_inv"
+#define  LIME_METAL_STRING          "-lime_metal"
+#define  LIME_METAL_NEG_STRING      "-lime_metal_inv"
+#define  RED_METAL_STRING           "-red_metal"
+#define  RED_METAL_NEG_STRING       "-red_metal_inv"
+#define  PURPLE_METAL_STRING        "-purple_metal"
+#define  PURPLE_METAL_NEG_STRING    "-purple_metal_inv"
 #define  SPECTRAL_STRING            "-spectral"
 #define  RED_STRING                 "-red"
 #define  GREEN_STRING               "-green"
@@ -104,24 +115,79 @@ typedef  struct
     object_struct       **objects;
 } file_lookup;
 
-private  void  print_usage(
-    char   executable_name[] )
-{
-    STRING   usage = "\n\
-Usage: %s   ...  object1.obj ... object2.obj ... \n\
+private  void  print_usage( char   executable_name[] ) {
+
+    STRING usage = "\n\
+Usage: %s   ...  <object1.obj> ... <object2.obj> ... \n\
 \n\
--help \n\
---help \n\
--h \n\
-help        : print this message and quit \n\
- \n\
--gray     min  max  volume.mnc  interpolation opacity \n\
--hot      min  max  volume.mnc  interpolation opacity \n\
--spectral min  max  volume.mnc  interpolation opacity \n\
--red      min  max  volume.mnc  interpolation opacity \n\
--green    min  max  volume.mnc  interpolation opacity \n\
--blue     min  max  volume.mnc  interpolation opacity \n\
--colour   min  max  volume.mnc  interpolation opacity \n\
+-help | --help | -h | help \n\
+            : print this message and quit \n\
+\n\
+Options are:\n\
+\n\
+-size <x_size> <y_size> \n\
+            : image size (default 300 300) \n\
+-window_width <width> \n\
+            : width of camera view (default ??) \n\
+-aspect <aspect> \n\
+            : aspect of image (default 1.0) \n\
+-scale <factor> \n\
+            : scaling factor (default 1.0) \n\
+-output <filename> \n\
+            : output filename for image (default image.rgb) \n\
+\n\
+-light | -nolight \n\
+            : turn on and off lighting effects for subsequent objects (default -light) \n\
+-ambient <r> <g> <b> \n\
+            : ambient light (default 0.3 0.3 0.3) \n\
+-directional <x> <y> <z> <r> <g> <b> \n\
+            : define the direction x y z of the light and its rgb components \n\
+              (default ??) \n\
+-point <nx> <ny> <nz> <r> <g> <b> <ax> <ay> <az> \n\
+            : define the direction x y z of the light and its rgb components, \n\
+              with attenuation factors ax ay az (default ??) \n\
+-persp | -ortho \n\
+            : perspective or orthographic view (default -persp) \n\
+-perspective_distance <dist> \n\
+            : distance from viewpoint in perspective view (default ??) \n\
+-camera | -model \n\
+            : ????? (default -model) \n\
+-left_eye | -right_eye \n\
+            : look from left or right eye (default is center) \n\
+-eye_separation <offset> \n\
+            : separation distance between eyes (default 7.0) \n\
+-eye <nx> <ny> <nz> \n\
+            : eyepoint oriention (default ??) \n\
+-shadows | -noshadows \n\
+            : enable shadows or not (default -noshadows) \n\
+-shadow_offset <offset> \n\
+            : offset for shadows (default 0.05) \n\
+-normals | -nonormals \n\
+            : enable calculation of normal vectors or not (default -normals) \n\
+-smooth_normals <n_iters> <ratio> \n\
+            : smooth the surface normals (default 0 0.8) \n\
+-flat | -smooth \n\
+            : use flat or smooth shading for polygons (default -smooth) \n\
+\n\
+-gray              <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-hot               <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-hot_inv           <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-cold_metal        <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-cold_metal_inv    <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-green_metal       <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-green_metal_inv   <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-lime_metal        <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-lime_metal_inv    <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-red_metal         <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-red_metal_inv     <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-purple_metal      <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-purple_metal_inv  <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-spectral          <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-red               <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-green             <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-blue              <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-colour            <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
+-usercc            <user_map.rgb>  <min>  <max>  [grad] <volume.mnc>  <interpolation> <opacity> \n\
  \n\
             : colour subsequent objects on the command line with this \n\
               colour coding method.  The values min and max define the \n\
@@ -129,22 +195,73 @@ help        : print this message and quit \n\
               for nearest neighbour, 0 for trilinear, or 2 for tri-cubic. \n\
               The opacity is a value between 0 and 1 where 1 is fully \n\
               opaque.  If -colour is used, then the colour coding used is \n\
-              a scale from black through to the current over_colour. \n\
+              a scale from black through to the current over_colour. (default none) \n\
  \n\
--under    colour_name \n\
--under    '1 0 0' \n\
--under    '1 0 0 1' \n\
--over     colour_name \n\
--over     '1 0 0' \n\
--over     '1 0 0 1' \n\
- \n\
-            : sets the colour for volume values above or below the min,max \n\
+-reverse_order_colouring | -noreverse_order_colouring \n\
+            : use or do not use reverse colouring (default -noreverse_order_colouring) \n\
+-volume <threshold> { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
+            : threshold and colour for volume (default none) \n\
+-fill_value <val> | -nofill_value \n\
+            : fill value for volume (default none) \n\
+-under { <colour_name> | '1 0 0' | '1 0 0 1' } | -over { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
+            : set the colour for volume values above or below the min,max \n\
               colour range.  Colour names include red, green, blue, \n\
-              yellow, purple, brown, etc. \n\
- \n\
- \n\
-(more help to be added soon). \n\
-\n";
+              yellow, purple, brown, etc. or transparent (default none) \n\
+-bg { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
+            : set the background colour (default 0.3 0.3 0.3) \n\
+-behind { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
+            : (default none) \n\
+\n\
+-crop | -nocrop \n\
+            : crop or do not crop the image (default -nocrop) \n\
+\n\
+-marker_colour { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
+            : colour for the markers (tag points) (default green) \n\
+-marker_sphere | -marker_box \n\
+            : symbol for the markers (default -marker_sphere) \n\
+-marker_size <size> \n\
+            : size of the marker symbol (default 1) \n\
+-line_width <width> \n\
+            : line thickness for drawing line objects (default ??) \n\
+\n\
+-top | -bottom | -left | -right | -back | -front \n\
+            : view orientation for surfaces (default - see -view)\n\
+-view <nx> <ny> <nz> <x_up> <y_up> <z_up> \n\
+            : user-defined view orientation (default 0.77 -0.18 -0.6 0.55 0.6 0.55) \n\
+-clip off | { { inside | outside } <file.obj> } \n\
+            : no clip or clip to inside or outside a given object (default off) \n\
+\n\
+-sup <sampling> \n\
+            : super sampling factor (default 1) \n\
+-delete_volume <n> \n\
+            : delete n_th volume (default none) \n\
+-centre <x> <y> <z> \n\
+            : centre of rotation for transformation (default none) \n\
+-transform [[inverse] <trans.xfm> | identity | xrot <angle> | yrot <angle> | zrot <angle> | \n\
+            rot <nx> <ny> <nz> <angle> ] \n\
+            : apply a transformation file or a simple transformation (default none)\n\
+\n\
+Other (undocumented) parameters: \n\
+\n\
+-one_hit | -multi_hit \n\
+            : (default -multi_hit) \n\
+-bintree <factor> (default 0.4)\n\
+-mult | -nomult \n\
+            : (default -nomult) \n\
+-composite | -nocomposite \n\
+            : (default -nocomposite) \n\
+-extend_volume | -no_extend_volume \n\
+            : (default -no_extend_volume) \n\
+-text | -grey | -dither4 | -dither8 | -rgb \n\
+            : text = use 0 bit representation for colours \n\
+            : grey = use 1 bit representation for colours \n\
+            : dither4 = use 4 bits representation for colours \n\
+            : dither8 = use 8 bits representation for colours \n\
+            : rgb = use 24 bits representation for colours (default)\n\
+\n\
+(See http://www.bic.mni.mcgill.ca/~david/Ray_trace/ray_trace_tutorial.html for\n\
+a tutorial introduction.) \n\n";
+
     print_error( usage, executable_name );
 }
 
@@ -318,6 +435,17 @@ int  main(
         }
         else if( equal_strings( argument, GRAY_STRING )  ||
             equal_strings( argument, HOT_STRING )  ||
+            equal_strings( argument, HOT_NEG_STRING ) ||
+            equal_strings( argument, COLD_METAL_STRING ) ||
+            equal_strings( argument, COLD_METAL_NEG_STRING ) ||
+            equal_strings( argument, GREEN_METAL_STRING ) ||
+            equal_strings( argument, GREEN_METAL_NEG_STRING ) ||
+            equal_strings( argument, LIME_METAL_STRING ) ||
+            equal_strings( argument, LIME_METAL_NEG_STRING ) ||
+            equal_strings( argument, RED_METAL_STRING ) ||
+            equal_strings( argument, RED_METAL_NEG_STRING ) ||
+            equal_strings( argument, PURPLE_METAL_STRING ) ||
+            equal_strings( argument, PURPLE_METAL_NEG_STRING ) ||
             equal_strings( argument, SPECTRAL_STRING )  ||
             equal_strings( argument, RED_STRING )  ||
             equal_strings( argument, GREEN_STRING )  ||
@@ -332,6 +460,28 @@ int  main(
                 coding_type = SINGLE_COLOUR_SCALE;
             else if( equal_strings( argument, HOT_STRING ) )
                 coding_type = HOT_METAL;
+            else if( equal_strings( argument, HOT_NEG_STRING ) )
+                coding_type = HOT_METAL_NEG;
+            else if( equal_strings( argument, COLD_METAL_STRING ) )
+                coding_type = COLD_METAL;
+            else if( equal_strings( argument, COLD_METAL_NEG_STRING ) )
+                coding_type = COLD_METAL_NEG;
+            else if( equal_strings( argument, GREEN_METAL_STRING ) )
+                coding_type = GREEN_METAL;
+            else if( equal_strings( argument, GREEN_METAL_NEG_STRING ) )
+                coding_type = GREEN_METAL_NEG;
+            else if( equal_strings( argument, LIME_METAL_STRING ) )
+                coding_type = LIME_METAL;
+            else if( equal_strings( argument, LIME_METAL_NEG_STRING ) )
+                coding_type = LIME_METAL_NEG;
+            else if( equal_strings( argument, RED_METAL_STRING ) )
+                coding_type = RED_METAL;
+            else if( equal_strings( argument, RED_METAL_NEG_STRING ) )
+                coding_type = RED_METAL_NEG;
+            else if( equal_strings( argument, PURPLE_METAL_STRING ) )
+                coding_type = PURPLE_METAL;
+            else if( equal_strings( argument, PURPLE_METAL_NEG_STRING ) )
+                coding_type = PURPLE_METAL_NEG;
             else if( equal_strings( argument, SPECTRAL_STRING ) )
                 coding_type = SPECTRAL;
             else if( equal_strings( argument, USER_DEF_STRING ) )
@@ -619,7 +769,7 @@ int  main(
         {
             if( !get_real_argument( 0.0, &current_marker_size ) )
             {
-                print_error( "Missing aspect argument.\n" );
+                print_error( "Missing marker size argument.\n" );
                 print_usage( argv[0] );
                 return( 1 );
             }
