@@ -198,7 +198,8 @@ Options are:\n\
               a scale from black through to the current over_colour. (default none) \n\
  \n\
 -reverse_order_colouring | -noreverse_order_colouring \n\
-            : use or do not use reverse colouring (default -noreverse_order_colouring) \n\
+            : colour the volumes in input or reverse input order \n\
+              (default -noreverse_order_colouring) \n\
 -volume <threshold> { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
             : threshold and colour for volume (default none) \n\
 -fill_value <val> | -nofill_value \n\

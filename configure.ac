@@ -44,5 +44,6 @@ Graphics/GLUT_windows/Makefile
 Graphics/G_graphics/Makefile
 Graphics/OpenGL_graphics/Makefile])
 
-AC_OUTPUT(epm-header)
+AC_OUTPUT(create_bar_graph
+          epm-header)
 

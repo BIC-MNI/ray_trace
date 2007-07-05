@@ -2,6 +2,7 @@
 2007-06-28  Claude Lepage <claude@bic.mni.mcgill.ca>
 
 	* added new cool colour maps
+        * added create_bar_graph.pl for legend box
 	* extend the help documentation
 
 2006-12-01  Andrew L Janke <a.janke@gmail.com>

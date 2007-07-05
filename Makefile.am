@@ -6,6 +6,8 @@ SUBDIRS = Graphics
 
 bin_PROGRAMS = ray_trace
 
+bin_SCRIPTS = create_bar_graph
+
 EXTRA_DIST = m4/mni_cxx_have_koenig_lookup.m4 \
 	m4/mni_REQUIRE_LIB.m4 \
 	m4/mni_REQUIRE_MNILIBS.m4 \
@@ -17,6 +19,7 @@ EXTRA_DIST = m4/mni_cxx_have_koenig_lookup.m4 \
 	Include/ray_trace.h \
 	Include/ray_trace_prototypes.h \
 	Documentation/ray_trace_tutorial.html \
+	create_bar_graph.in \
 	epm-header.in
 
 
