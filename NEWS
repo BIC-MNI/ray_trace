@@ -1,3 +1,8 @@
+   New in Release 1.0.3
+
+* make default lights symmetric to avoid confusing
+  shadows on surfaces
+
    New in Release 1.0.2
 
 * added new cool colour maps

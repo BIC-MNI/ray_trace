@@ -1633,8 +1633,10 @@ private  void  orient_lights(
 private  void  define_default_lights(
     lights_struct   *lights )
 {
-    static  Vector  light_dir[] = { { 1.0f, -1.0f, -1.0f },
-                                    { -1.0f, 1.0f, -1.0f } };
+    static  Vector  light_dir[] = { {  1.0f,  1.0f, -1.0f },
+                                    { -1.0f,  1.0f, -1.0f },
+                                    {  1.0f, -1.0f, -1.0f },
+                                    { -1.0f, -1.0f, -1.0f } };
     int      i;
 
     lights->ambient_light = make_Colour_0_1( 0.3, 0.3, 0.3 );
@@ -1642,7 +1644,7 @@ private  void  define_default_lights(
     ALLOC( lights->lights, lights->n_lights );
     for_less( i, 0, lights->n_lights )
     {
-        lights->lights[i].colour = WHITE;
+        lights->lights[i].colour = make_Colour_0_1( 0.6, 0.6, 0.6 );
 
         lights->lights[i].type = DIRECTIONAL_LIGHT;
         lights->lights[i].direction = light_dir[i];

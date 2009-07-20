@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([ray_trace],[1.0.2],[David McDonald])
+AC_INIT([ray_trace],[1.0.3],[David McDonald])
 AC_CONFIG_SRCDIR([ray_trace.c])
 AM_INIT_AUTOMAKE
 
