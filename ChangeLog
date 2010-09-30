@@ -1,3 +1,6 @@
+2010-09-10  Claude Lepage <claude@bic.mni.mcgill.ca>
+	* use BIC/MINC license (like Register/Display) instead of GPL license
+
 2009-07-20  Claude Lepage <claude@bic.mni.mcgill.ca>
 	* make default lights symmetric to avoid confusing 
           shadows on surfaces
