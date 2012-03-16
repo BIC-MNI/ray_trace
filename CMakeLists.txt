@@ -4,7 +4,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-PROJECT(ray_trace)
+PROJECT(ray_trace "C")
 
 #SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 # ENABLE_TESTING()
@@ -36,9 +36,9 @@ FIND_PACKAGE( GLUT REQUIRED )
 INCLUDE( ${MINC2_USE_FILE} )
 INCLUDE( ${BICPL_USE_FILE} )
 
+SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${MINC2_INCLUDE_DIRS} ${BICPL_INCLUDE_DIRS})
+
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
-ADD_DEFINITIONS(-DUSE_COMPMAT)
-ADD_DEFINITIONS(-DUSE_DBLMAT)
 
 # add for building relocatable library
 # IF(UNIX)
@@ -87,8 +87,8 @@ ELSE(WINDOWS)
 ENDIF(WINDOWS)
 
 IF(NOT HAVE_DEFORM_H)
-  message(FATAL_ERROR "cannot find deform.h - make sure you have bicpl 1.4.0 or later")
-ENDIF(HAVE_DEFORM_H)
+  message(WARNING "cannot find deform.h - make sure you have bicpl 1.4.0 or later")
+ENDIF(NOT HAVE_DEFORM_H)
 
 # others
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
@@ -96,44 +96,19 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/epm-header.in ${CMAKE_BINARY_DIR}/epm-header)
 
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} Include )
 
-
-
 SET(PERL ${PERL_EXECUTABLE})
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/field2imp.in ${CMAKE_BINARY_DIR}/field2imp @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/imp2field.in ${CMAKE_BINARY_DIR}/imp2field @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/make_template.in  ${CMAKE_BINARY_DIR}/make_template @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/nu_estimate.in  ${CMAKE_BINARY_DIR}/nu_estimate @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/nu_estimate_np_and_em.in  ${CMAKE_BINARY_DIR}/nu_estimate_np_and_em @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/nu_evaluate.in  ${CMAKE_BINARY_DIR}/nu_evaluate @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/resample_labels.in  ${CMAKE_BINARY_DIR}/resample_labels @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/NUcorrect/sharpen_volume.in ${CMAKE_BINARY_DIR}/sharpen_volume @ONLY)
+
+ADD_SUBDIRECTORY( Graphics )
+
+INCLUDE_DIRECTORIES( Graphics/Include )
+
+ADD_EXECUTABLE(ray_trace ray_trace.c intersect.c trace.c  volume.c )
+TARGET_LINK_LIBRARIES(ray_trace bicgl ${BICPL_LIBRARIES} ${VOLUME_IO_LIBRARIES} ${MINC2_LIBRARIES})
 
 
-INSTALL(TARGETS 
- correct_field evaluate_field extracttag sharpen_hist spline_smooth volume_hist volume_stats
-  DESTINATION bin)
-
-INSTALL(PROGRAMS
-  ${CMAKE_BINARY_DIR}/field2imp
-  ${CMAKE_BINARY_DIR}/imp2field
-  ${CMAKE_BINARY_DIR}/make_template
-  ${CMAKE_BINARY_DIR}/nu_estimate
-  ${CMAKE_BINARY_DIR}/nu_estimate_np_and_em
-  ${CMAKE_BINARY_DIR}/nu_evaluate
-  ${CMAKE_BINARY_DIR}/resample_labels
-  ${CMAKE_BINARY_DIR}/sharpen_volume
-  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ  WORLD_EXECUTE WORLD_READ
-   DESTINATION bin )
-
-INSTALL(PROGRAMS
-  ${CMAKE_BINARY_DIR}/nu_estimate
-  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ  WORLD_EXECUTE WORLD_READ
-   DESTINATION bin 
-  RENAME nu_correct )
-
-
+INSTALL(TARGETS ray_trace DESTINATION bin)
 # testing
-IF(BUILD_TESTING)
-  #ADD_SUBDIRECTORY( testing )
-ENDIF(BUILD_TESTING)
+# IF(BUILD_TESTING)
+#   #ADD_SUBDIRECTORY( testing )
+# ENDIF(BUILD_TESTING)

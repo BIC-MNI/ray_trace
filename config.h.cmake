@@ -1,5 +1,5 @@
 /* Use the Apple OpenGL framework. */
-#cmakedefine01 HAVE_APPLE_OPENGL_FRAMEWORK
+#cmakedefine HAVE_APPLE_OPENGL_FRAMEWORK
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine01 HAVE_DLFCN_H
@@ -35,17 +35,17 @@
 #cmakedefine01 HAVE_UNISTD_H
 
 /* Define to 1 if you have the <windows.h> header file. */
-#cmakedefine01 HAVE_WINDOWS_H
+#cmakedefine HAVE_WINDOWS_H
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
-#cmakedefine01 PTHREAD_CREATE_JOINABLE
+#cmakedefine PTHREAD_CREATE_JOINABLE
 
 /* Define to 1 if you have the ANSI C header files. */
-#cmakedefine01 STDC_HEADERS
+#define STDC_HEADERS 1
 
 /* Define to 1 if the X Window System is missing or not being used. */
-#cmakedefine01 X_DISPLAY_MISSING
+#cmakedefine X_DISPLAY_MISSING
 
 
 #define PACKAGE "@PACKAGE_NAME@"
