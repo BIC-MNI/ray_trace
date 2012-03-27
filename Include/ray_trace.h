@@ -1,7 +1,7 @@
 #ifndef  DEF_RAY_TRACE_H
 #define  DEF_RAY_TRACE_H
 
-#include  <volume_io/internal_volume_io.h>
+#include  <volume_io.h>
 #include  <bicpl.h>
 #include  <graphics.h>
 
