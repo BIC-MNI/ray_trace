@@ -69,7 +69,7 @@ CHECK_INCLUDE_FILES(inttypes.h  HAVE_INTTYPES_H)
 CHECK_INCLUDE_FILES(string.h    HAVE_STRING_H)
 CHECK_INCLUDE_FILES(strings.h   HAVE_STRINGS_H)
 
-CHECK_INCLUDE_FILES(bicpl/deform.h HAVE_DEFORM_H)
+# CHECK_INCLUDE_FILES(bicpl/deform.h HAVE_DEFORM_H)
 
 IF(CMAKE_USE_PTHREADS_INIT)
   SET(HAVE_PTHREAD ON)
@@ -83,9 +83,9 @@ ELSE(WINDOWS)
   SET(HAVE_WINDOWS_H OFF)
 ENDIF(WINDOWS)
 
-IF(NOT HAVE_DEFORM_H)
-  message(WARNING "cannot find deform.h - make sure you have bicpl 1.4.0 or later")
-ENDIF(NOT HAVE_DEFORM_H)
+# IF(NOT HAVE_DEFORM_H)
+#   message(WARNING "cannot find deform.h - make sure you have bicpl 1.4.0 or later")
+# ENDIF(NOT HAVE_DEFORM_H)
 
 # others
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
