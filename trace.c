@@ -1,28 +1,28 @@
 #include  <ray_trace.h>
 
-private  BOOLEAN  ray_intersects_objects(
-    Point            *origin,
-    Vector           *direction,
+static  BOOLEAN  ray_intersects_objects(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     int              n_objects,
     ray_trace_object objects[],
     BOOLEAN          use_flags[],
     int              *obj_index,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Surfprop         *spr,
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Surfprop         *spr,
     Real             *closest_dist );
 
-private  void  get_ray(
+static  void  get_ray(
     view_struct  *view,
     Real         x_pixel,
     Real         y_pixel,
-    Point        *origin,
-    Vector       *direction )
+    VIO_Point        *origin,
+    VIO_Vector       *direction )
 {
-    Vector   x_offset, y_offset, z_offset, offset;
+    VIO_Vector   x_offset, y_offset, z_offset, offset;
     Real     x_position, y_position;
-    Point    screen_position;
+    VIO_Point    screen_position;
 
     x_position = -view->window_width / 2.0 + view->window_width *
                  (x_pixel + 0.5) / (Real) view->x_viewport_size;
@@ -65,16 +65,16 @@ private  void  get_ray(
     }
 }
 
-private  void  get_light_component(
+static  void  get_light_component(
     int               n_objects,
     ray_trace_object  objects[],
     light_struct      *light,
     BOOLEAN           doing_shadows,
     Real              shadow_offset,
-    Vector            *view_direction,
-    Point             *point,
-    Vector            *normal,
-    Surfprop          *spr,
+    VIO_Vector            *view_direction,
+    VIO_Point             *point,
+    VIO_Vector            *normal,
+    VIO_Surfprop          *spr,
     Real              r,
     Real              g,
     Real              b,
@@ -83,7 +83,7 @@ private  void  get_light_component(
     Real              *b_comp )
 {
     Real            n_dot_l, n_dot_h, attenuation, dist, denominator;
-    Vector          highlight, to_light;
+    VIO_Vector          highlight, to_light;
 
     *r_comp = 0.0;
     *g_comp = 0.0;
@@ -111,16 +111,16 @@ private  void  get_light_component(
 
         if( doing_shadows )
         {
-            Point           origin;
-            Vector          offset;
+            VIO_Point           origin;
+            VIO_Vector          offset;
 
             SCALE_VECTOR( offset, to_light, shadow_offset );
             ADD_POINT_VECTOR( origin, *point, offset );
 
             if( ray_intersects_objects( &origin, &to_light, n_objects, objects,
                                         NULL, (int *) NULL,
-                                        (Point *) NULL, (Vector *) NULL,
-                                        (Colour *) NULL, (Surfprop *) NULL,
+                                        (VIO_Point *) NULL, (VIO_Vector *) NULL,
+                                        (VIO_Colour *) NULL, (VIO_Surfprop *) NULL,
                                         &dist ) &&
                 (light->type == DIRECTIONAL_LIGHT ||
                  dist < distance_between_points( point, &light->position )) )
@@ -173,26 +173,26 @@ private  void  get_light_component(
     }
 }
 
-private  BOOLEAN  ray_intersects_regular_object(
-    Point            *origin,
-    Vector           *direction,
+static  BOOLEAN  ray_intersects_regular_object(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     object_struct    *object,
     render_struct    *render,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Surfprop         *spr,
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Surfprop         *spr,
     Real             *dist )
 {
     model_struct      *model;
     BOOLEAN           found, flat_shading;
     int               i;
-    Point             a_point;
-    Vector            a_normal;
-    Colour            a_colour;
-    Surfprop          a_spr;
+    VIO_Point             a_point;
+    VIO_Vector            a_normal;
+    VIO_Colour            a_colour;
+    VIO_Surfprop          a_spr;
     Real              this_dist;
-    static  Surfprop  default_line_spr = { 0.3f, 0.6f, 0.6f, 40.0f, 1.0f };
+    static  VIO_Surfprop  default_line_spr = { 0.3f, 0.6f, 0.6f, 40.0f, 1.0f };
 
     if( render == NULL )
         flat_shading = TRUE;
@@ -218,7 +218,7 @@ private  BOOLEAN  ray_intersects_regular_object(
 
                     *dist = this_dist;
 
-                    if( point != (Point *) NULL )
+                    if( point != (VIO_Point *) NULL )
                     {
                         *point = a_point;
                         *normal = a_normal;
@@ -268,7 +268,7 @@ private  BOOLEAN  ray_intersects_regular_object(
     return( found );
 }
 
-private  void  sort_reals(
+static  void  sort_reals(
     int    n,
     Real   values[] )
 {
@@ -310,7 +310,7 @@ typedef  struct
     int    new_end_size;
 } intervals_struct;
 
-private  void  initialize_intervals(
+static  void  initialize_intervals(
     intervals_struct   *is )
 {
     is->start_intervals = is->start_intervals_fixed;
@@ -324,7 +324,7 @@ private  void  initialize_intervals(
     is->new_end_size = DEFAULT_SIZE;
 }
 
-private  void  delete_intervals(
+static  void  delete_intervals(
     intervals_struct   *is )
 {
     if( is->start_size > DEFAULT_SIZE )
@@ -361,9 +361,9 @@ private  void  delete_intervals(
         ++(index); \
     }
 
-private  int  get_ray_clip_intervals(
-    Point             *origin,
-    Vector            *direction,
+static  int  get_ray_clip_intervals(
+    VIO_Point             *origin,
+    VIO_Vector            *direction,
     clip_struct       *clip,
     intervals_struct  *is )
 {
@@ -508,20 +508,20 @@ private  int  get_ray_clip_intervals(
     return( n );
 }
 
-private  BOOLEAN  ray_intersects_object(
-    Point            *origin,
-    Vector           *direction,
+static  BOOLEAN  ray_intersects_object(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     ray_trace_object *object,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Surfprop         *spr,
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Surfprop         *spr,
     Real             *dist,
     intervals_struct *is )
 {
     int      interval, n_intervals;
     BOOLEAN  found;
-    Point    clip_origin;
+    VIO_Point    clip_origin;
 
     n_intervals = get_ray_clip_intervals( origin, direction,
                                           &object->clip, is );
@@ -571,24 +571,24 @@ private  BOOLEAN  ray_intersects_object(
     return( found );
 }
 
-private  BOOLEAN  ray_intersects_objects(
-    Point            *origin,
-    Vector           *direction,
+static  BOOLEAN  ray_intersects_objects(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     int              n_objects,
     ray_trace_object objects[],
     BOOLEAN          use_flags[],
     int              *obj_index,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Surfprop         *spr,
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Surfprop         *spr,
     Real             *closest_dist )
 {
     int              i;
-    Point            a_point;
-    Vector           a_normal;
-    Colour           a_colour;
-    Surfprop         a_spr;
+    VIO_Point            a_point;
+    VIO_Vector           a_normal;
+    VIO_Colour           a_colour;
+    VIO_Surfprop         a_spr;
     Real             dist;
     BOOLEAN          found;
     intervals_struct is;
@@ -614,7 +614,7 @@ private  BOOLEAN  ray_intersects_objects(
                 if( obj_index != NULL )
                     *obj_index = i;
 
-                if( point != (Point *) NULL )
+                if( point != (VIO_Point *) NULL )
                 {
                     *point = a_point;
                     *normal = a_normal;
@@ -630,9 +630,9 @@ private  BOOLEAN  ray_intersects_objects(
     return( found );
 }
 
-private  BOOLEAN  recursive_ray_trace_one(
-    Point                 *origin,
-    Vector                *direction,
+static  BOOLEAN  recursive_ray_trace_one(
+    VIO_Point                 *origin,
+    VIO_Vector                *direction,
     lights_struct         *lights,
     int                   n_objects,
     ray_trace_object      objects[],
@@ -644,18 +644,18 @@ private  BOOLEAN  recursive_ray_trace_one(
     Real                  *a )
 {
     int             i, v, object_index;
-    Colour          object_colour, col_code, cum_col;
-    Point           intersection_point, new_origin;
-    Vector          normal, offset;
-    Real            voxel[MAX_DIMENSIONS], value, fill_value;
+    VIO_Colour          object_colour, col_code, cum_col;
+    VIO_Point           intersection_point, new_origin;
+    VIO_Vector          normal, offset;
+    Real            voxel[VIO_MAX_DIMENSIONS], value, fill_value;
     Real            r_cum, g_cum, b_cum, a_cum;
     Real            r_cc, g_cc, b_cc, a_cc, weight;
     Real            r_light, g_light, b_light, dist;
     Real            r_object, g_object, b_object, a_object, opacity;
     Real            r_behind, g_behind, b_behind, a_behind;
     Real            dx, dy, dz;
-    Volume          volume;
-    Surfprop        spr;
+    VIO_Volume          volume;
+    VIO_Surfprop        spr;
     BOOLEAN         using_volume, hit_something;
 
     hit_something = ray_intersects_objects( origin, direction,
@@ -726,7 +726,7 @@ private  BOOLEAN  recursive_ray_trace_one(
                     }
 
                     if( is_an_rgb_volume( volume ) )
-                        col_code = (Colour) value;
+                        col_code = (VIO_Colour) value;
                     else
                     {
                         col_code = get_colour_code( &objects[object_index].
@@ -856,7 +856,7 @@ private  BOOLEAN  recursive_ray_trace_one(
     return( hit_something );
 }
 
-public  Colour  trace_ray(
+  VIO_Colour  trace_ray(
     view_struct           *view,
     lights_struct         *lights,
     int                   n_objects,
@@ -870,9 +870,9 @@ public  Colour  trace_ray(
 {
     Real     r_sum, g_sum, b_sum, a_sum, r, g, b, a, x_sub_pixel, y_sub_pixel;
     int      x, y, o;
-    Colour   col;
-    Point    origin;
-    Vector   direction;
+    VIO_Colour   col;
+    VIO_Point    origin;
+    VIO_Vector   direction;
 
     r_sum = 0.0;
     g_sum = 0.0;
@@ -938,7 +938,7 @@ public  Colour  trace_ray(
     return( col );
 }
 
-private  void  ray_trace_scanline(
+static  void  ray_trace_scanline(
     view_struct           *view,
     lights_struct         *lights,
     int                   n_objects,
@@ -981,7 +981,7 @@ typedef  struct
     pixels_struct         *pixels;
 } scan_line_struct;
 
-private  void  ray_trace_a_scanline(
+static  void  ray_trace_a_scanline(
     int     y,
     void    *data)
 {
@@ -1007,7 +1007,7 @@ private  void  ray_trace_a_scanline(
     }
 }
 
-public  void  ray_trace_scene(
+  void  ray_trace_scene(
     view_struct           *view,
     lights_struct         *lights,
     int                   n_objects,
@@ -1018,7 +1018,7 @@ public  void  ray_trace_scene(
     pixels_struct         *pixels )
 {
     int                y;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
     scan_line_struct   data;
 
     initialize_progress_report( &progress, FALSE, view->y_viewport_size,
@@ -1047,7 +1047,7 @@ public  void  ray_trace_scene(
 #ifdef DEBUG
     {
         int            x, y;
-        Colour         col1, col2;
+        VIO_Colour         col1, col2;
         pixels_struct  copy;
 
         copy_pixel_region( pixels, 0, 100000, 0, 100000, &copy );

@@ -1,20 +1,20 @@
 #include  <ray_trace.h>
 
-private  void  interpolate_over_polygon(
-    Point        *point,
+static  void  interpolate_over_polygon(
+    VIO_Point        *point,
     int          n_points,
-    Point        points[],
+    VIO_Point        points[],
     BOOLEAN      flat_shading_flag,
-    Vector       normals[],
+    VIO_Vector       normals[],
     Colour_flags colour_flag,
-    Colour       colours[],
-    Vector       *normal,
-    Colour       *colour )
+    VIO_Colour       colours[],
+    VIO_Vector       *normal,
+    VIO_Colour       *colour )
 {
     int              i;
-    Real             weights[MAX_POINTS_PER_POLYGON];
-    Real             r, g, b, a;
-    Vector           scaled_normal;
+    VIO_Real             weights[MAX_POINTS_PER_POLYGON];
+    VIO_Real             r, g, b, a;
+    VIO_Vector           scaled_normal;
 
     if( colour_flag == PER_VERTEX_COLOURS )
     {
@@ -54,28 +54,28 @@ private  void  interpolate_over_polygon(
         *colour = make_rgba_Colour_0_1( r, g, b, a );
 }
 
-public  BOOLEAN  ray_intersects_a_polygon(
-    Point            *origin,
-    Vector           *direction,
+  BOOLEAN  ray_intersects_a_polygon(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     object_struct    *object,
     BOOLEAN          flat_shading_flag,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Real             *dist )
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Real             *dist )
 {
     polygons_struct  *polygons;
     int              size, i, object_index, point_index;
-    Point            points[MAX_POINTS_PER_POLYGON];
-    Vector           normals[MAX_POINTS_PER_POLYGON];
-    Colour           colours[MAX_POINTS_PER_POLYGON];
+    VIO_Point            points[MAX_POINTS_PER_POLYGON];
+    VIO_Vector           normals[MAX_POINTS_PER_POLYGON];
+    VIO_Colour           colours[MAX_POINTS_PER_POLYGON];
     BOOLEAN          found;
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
-                                       (Real **) NULL ) > 0;
+                                       (VIO_Real **) NULL ) > 0;
 
-    if( found && point != (Point *) NULL )
+    if( found && point != (VIO_Point *) NULL )
     {
         polygons = get_polygons_ptr( object );
 
@@ -107,29 +107,29 @@ public  BOOLEAN  ray_intersects_a_polygon(
     return( found );
 }
 
-public  BOOLEAN  ray_intersects_a_quadmesh(
-    Point            *origin,
-    Vector           *direction,
+  BOOLEAN  ray_intersects_a_quadmesh(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     object_struct    *object,
     BOOLEAN          flat_shading_flag,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Real             *dist )
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Real             *dist )
 {
     quadmesh_struct  *quadmesh;
     int              i, j, m, n, p, object_index;
     int              indices[4];
-    Point            points[4];
-    Vector           normals[4];
-    Colour           colours[4];
+    VIO_Point            points[4];
+    VIO_Vector           normals[4];
+    VIO_Colour           colours[4];
     BOOLEAN          found;
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
-                                       (Real **) NULL ) > 0;
+                                       (VIO_Real **) NULL ) > 0;
 
-    if( found && point != (Point *) NULL )
+    if( found && point != (VIO_Point *) NULL )
     {
         quadmesh = get_quadmesh_ptr( object );
 
@@ -164,13 +164,13 @@ public  BOOLEAN  ray_intersects_a_quadmesh(
     return( found );
 }
 
-private  Real   get_line_alpha(
-    Point     *point,
-    Point     *p1,
-    Point     *p2 )
+static  VIO_Real   get_line_alpha(
+    VIO_Point     *point,
+    VIO_Point     *p1,
+    VIO_Point     *p2 )
 {
-    Real    alpha, d;
-    Vector  v, offset;
+    VIO_Real    alpha, d;
+    VIO_Vector  v, offset;
 
     SUB_POINTS( v, *p2, *p1 );
     SUB_POINTS( offset, *point, *p1 );
@@ -190,26 +190,26 @@ private  Real   get_line_alpha(
     return( alpha );
 }
 
-public  BOOLEAN  ray_intersects_a_line(
-    Point            *origin,
-    Vector           *direction,
+  BOOLEAN  ray_intersects_a_line(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     object_struct    *object,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Real             *dist )
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Real             *dist )
 {
     int           line, seg, p1, p2, object_index;
-    Real          alpha, r1, g1, b1, a1, r2, g2, b2, a2;
+    VIO_Real          alpha, r1, g1, b1, a1, r2, g2, b2, a2;
     BOOLEAN       found;
-    Point         centre, point1, point2;
+    VIO_Point         centre, point1, point2;
     lines_struct  *lines;
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
-                                       (Real **) NULL ) > 0;
+                                       (VIO_Real **) NULL ) > 0;
 
-    if( found && point != (Point *) NULL )
+    if( found && point != (VIO_Point *) NULL )
     {
         lines = get_lines_ptr( object );
 
@@ -254,16 +254,16 @@ public  BOOLEAN  ray_intersects_a_line(
     return( found );
 }
 
-public  BOOLEAN  ray_intersects_a_marker(
-    Point            *origin,
-    Vector           *direction,
+  BOOLEAN  ray_intersects_a_marker(
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     object_struct    *object,
-    Point            *point,
-    Vector           *normal,
-    Colour           *colour,
-    Real             *dist )
+    VIO_Point            *point,
+    VIO_Vector           *normal,
+    VIO_Colour           *colour,
+    VIO_Real             *dist )
 {
-    Real           orig, delta, t_min, t_max, t1, t2, pos1, pos2;
+    VIO_Real           orig, delta, t_min, t_max, t1, t2, pos1, pos2;
     int            object_index, dim;
     BOOLEAN        found;
     marker_struct  *marker;
@@ -273,7 +273,7 @@ public  BOOLEAN  ray_intersects_a_marker(
     t_min = 0.0;
     t_max = 0.0;
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         orig = RPoint_coord( *origin, dim );
         delta = RVector_coord( *direction, dim );
@@ -306,9 +306,9 @@ public  BOOLEAN  ray_intersects_a_marker(
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
-                                       (Real **) NULL ) > 0;
+                                       (VIO_Real **) NULL ) > 0;
 
-    if( found && point != (Point *) NULL )
+    if( found && point != (VIO_Point *) NULL )
     {
         marker = get_marker_ptr( object );
 

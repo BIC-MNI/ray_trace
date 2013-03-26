@@ -5,14 +5,14 @@
 
 /* ARGSUSED */
 
-private  BOOLEAN  search_volume(
-    Volume             volume,
+static  BOOLEAN  search_volume(
+    VIO_Volume             volume,
     int                continuity,
     bitlist_3d_struct  *done_bits,
     bitlist_3d_struct  *surface_bits,
     Real               threshold,
-    Point              *origin,
-    Vector             *direction,
+    VIO_Point              *origin,
+    VIO_Vector             *direction,
     Real               t_min,
     Real               t_max,
     Real               *t )
@@ -34,26 +34,26 @@ private  BOOLEAN  search_volume(
                                         &boundary_def, t ) );
 }
 
-public  BOOLEAN  ray_intersects_a_volume(
-    Point              *origin,
-    Vector             *direction,
-    Volume             volume,
+  BOOLEAN  ray_intersects_a_volume(
+    VIO_Point              *origin,
+    VIO_Vector             *direction,
+    VIO_Volume             volume,
     int                continuity,
     bitlist_3d_struct  *done_bits,
     bitlist_3d_struct  *surface_bits,
     Real               threshold,
-    Point              *point,
-    Vector             *normal,
+    VIO_Point              *point,
+    VIO_Vector             *normal,
     Real               *dist )
 {
-    int      sizes[MAX_DIMENSIONS];
+    int      sizes[VIO_MAX_DIMENSIONS];
     Real     t, t_min, t_max, xw, yw, zw;
-    Real     voxel[MAX_DIMENSIONS];
-    Real     voxel_origin[MAX_DIMENSIONS];
-    Real     voxel_direction[MAX_DIMENSIONS];
+    Real     voxel[VIO_MAX_DIMENSIONS];
+    Real     voxel_origin[VIO_MAX_DIMENSIONS];
+    Real     voxel_direction[VIO_MAX_DIMENSIONS];
     Real     value, dx, dy, dz;
-    Point    p_origin, int_point;
-    Vector   p_direction;
+    VIO_Point    p_origin, int_point;
+    VIO_Vector   p_direction;
     BOOLEAN  found;
 
     convert_world_to_voxel( volume,
@@ -104,7 +104,7 @@ public  BOOLEAN  ray_intersects_a_volume(
 
         convert_voxel_to_world( volume, voxel, &xw, &yw, &zw );
 
-        if( point != (Point *) NULL )
+        if( point != (VIO_Point *) NULL )
         {
             fill_Point( *point, xw, yw, zw );
 
@@ -128,14 +128,14 @@ public  BOOLEAN  ray_intersects_a_volume(
     return( found );
 }
 
-public  void  get_range_of_volume(
-    Volume    volume,
-    Point     *min_point,
-    Point     *max_point )
+  void  get_range_of_volume(
+    VIO_Volume    volume,
+    VIO_Point     *min_point,
+    VIO_Point     *max_point )
 {
-    int      i, j, k, sizes[MAX_DIMENSIONS];
-    Real     voxel[MAX_DIMENSIONS], xw, yw, zw;
-    Point    pos;
+    int      i, j, k, sizes[VIO_MAX_DIMENSIONS];
+    Real     voxel[VIO_MAX_DIMENSIONS], xw, yw, zw;
+    VIO_Point    pos;
 
     get_volume_sizes( volume, sizes );
 

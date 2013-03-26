@@ -33,25 +33,25 @@
 
 #define  DEFAULT_EYE_SEPARATION  7.0
 
-private  Status  load_file(
-    STRING              filename,
-    General_transform   *transform,
+static  VIO_Status  load_file(
+    VIO_STR              filename,
+    VIO_General_transform   *transform,
     Real                bintree_factor,
     Real                line_width_override,
-    Colour              current_marker_colour,
+    VIO_Colour              current_marker_colour,
     Real                current_marker_size,
     Marker_types        current_marker_type,
     int                 *n_objects,
     object_struct       ***objects );
 
-private  void  define_view(
+static  void  define_view(
     view_struct   *view,
     BOOLEAN       perspective_flag,
     BOOLEAN       eye_specified,
-    Point         *eye,
+    VIO_Point         *eye,
     BOOLEAN       view_specified,
-    Vector        *line_of_sight,
-    Vector        *up_dir,
+    VIO_Vector        *line_of_sight,
+    VIO_Vector        *up_dir,
     Real          specified_window_width,
     Real          specified_perspective_distance,
     int           which_eye,
@@ -59,34 +59,34 @@ private  void  define_view(
     int           x_size,
     int           y_size,
     Real          pixel_aspect,
-    Point         *min_range,
-    Point         *max_range,
+    VIO_Point         *min_range,
+    VIO_Point         *max_range,
     Real          fit_factor );
-private  void  define_default_lights(
+static  void  define_default_lights(
     lights_struct   *lights );
-private  void  orient_lights(
+static  void  orient_lights(
     lights_struct   *lights,
     view_struct     *view );
-public  Status  output_rgb_file(
-    STRING          filename,
+  VIO_Status  output_rgb_file(
+    VIO_STR          filename,
     pixels_struct   *pixels );
-private  void  prepare_objects(
+static  void  prepare_objects(
     int                 n_objects,
     object_struct       *objects[],
-    General_transform   *transform,
+    VIO_General_transform   *transform,
     Real                bintree_factor,
     Real                line_width_override );
 
-private  void   get_preset_view(
-    STRING   string,
-    Vector   *line_of_sight,
-    Vector   *up_dir );
+static  void   get_preset_view(
+    VIO_STR   string,
+    VIO_Vector   *line_of_sight,
+    VIO_Vector   *up_dir );
 
-private  BOOLEAN   string_is_preset_view(
-    STRING    string );
+static  BOOLEAN   string_is_preset_view(
+    VIO_STR    string );
 
-private  Real  get_Colour_intensity(
-    Colour   col )
+static  Real  get_Colour_intensity(
+    VIO_Colour   col )
 {
     static   Real  coefs[] = { 0.3, 0.59, 0.11 };
 
@@ -95,29 +95,29 @@ private  Real  get_Colour_intensity(
             coefs[2] * get_Colour_b_0_1(col) );
 }
 
-private  void  get_current_transform(
+static  void  get_current_transform(
     BOOLEAN            camera_space_flag,
     BOOLEAN            eye_specified,
-    Point              *eye,
+    VIO_Point              *eye,
     BOOLEAN            view_specified,
-    Vector             *line_of_sight,
-    Vector             *up_dir,
-    General_transform  *current_transform,
-    General_transform  *used_transform );
+    VIO_Vector             *line_of_sight,
+    VIO_Vector             *up_dir,
+    VIO_General_transform  *current_transform,
+    VIO_General_transform  *used_transform );
 
 typedef  struct
 {
-    STRING              filename;
-    General_transform   transform;
+    VIO_STR              filename;
+    VIO_General_transform   transform;
     Real                bintree_factor;
     Real                line_width_override;
     int                 n_objects;
     object_struct       **objects;
 } file_lookup;
 
-private  void  print_usage( char   executable_name[] ) {
+static  void  print_usage( char   executable_name[] ) {
 
-    STRING usage = "\n\
+    VIO_STR usage = "\n\
 Usage: %s   ...  <object1.obj> ... <object2.obj> ... \n\
 \n\
 -help | --help | -h | help \n\
@@ -206,7 +206,7 @@ Options are:\n\
             : fill value for volume (default none) \n\
 -under { <colour_name> | '1 0 0' | '1 0 0 1' } | -over { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
             : set the colour for volume values above or below the min,max \n\
-              colour range.  Colour names include red, green, blue, \n\
+              colour range.  VIO_Colour names include red, green, blue, \n\
               yellow, purple, brown, etc. or transparent (default none) \n\
 -bg { <colour_name> | '1 0 0' | '1 0 0 1' } \n\
             : set the background colour (default 0.3 0.3 0.3) \n\
@@ -275,27 +275,27 @@ int  main(
     BOOLEAN              over_colour_set, compute_normals;
     BOOLEAN              reverse_order_colouring_flag;
     BOOLEAN              perspective_flag, extend_volume_flag;
-    STRING               dimension_names[] = { ANY_SPATIAL_DIMENSION,
+    VIO_STR               dimension_names[] = { ANY_SPATIAL_DIMENSION,
                                                ANY_SPATIAL_DIMENSION,
                                                ANY_SPATIAL_DIMENSION };
-    STRING               volume_filename, output_file;
-    STRING               argument, user_def_filename;
-    STRING               transform_filename;
+    VIO_STR               volume_filename, output_file;
+    VIO_STR               argument, user_def_filename;
+    VIO_STR               transform_filename;
     int                  i, n_objects, x, y, x_size, y_size, n_colour_comps;
     int                  n_objects_in_file, super_sampling;
-    int                  sizes[MAX_DIMENSIONS], n_lights;
+    int                  sizes[VIO_MAX_DIMENSIONS], n_lights;
     int                  axis, which;
-    Point                min_pos, max_pos, min_range, max_range;
+    VIO_Point                min_pos, max_pos, min_range, max_range;
     Real                 intensity, aspect, fit_factor, threshold;
     Real                 fill_value;
     BOOLEAN              fill_value_specified;
     Real                 angle, shadow_offset;
-    Transform            rotation, trans;
+    VIO_Transform            rotation, trans;
     Real                 x_centre, y_centre, z_centre;
     Real                 window_width, perspective_distance;
-    Point                centre_of_rotation;
-    General_transform    transform, new_transform, specified_transform;
-    General_transform    used_transform;
+    VIO_Point                centre_of_rotation;
+    VIO_General_transform    transform, new_transform, specified_transform;
+    VIO_General_transform    used_transform;
     object_struct        **file_objects, *object;
     ray_trace_object     *object_list, ray_object;
     object_traverse_struct  object_traverse;
@@ -308,20 +308,20 @@ int  main(
     Real                 stereo_eye_offset;
     int                  which_eye;
     BOOLEAN              behind_specified;
-    Colour               background_colour, colour, under_colour, over_colour;
-    Colour               behind_transparency_colour, alternate_behind, col;
-    Colour               this_over_colour;
-    STRING               colour_name;
+    VIO_Colour               background_colour, colour, under_colour, over_colour;
+    VIO_Colour               behind_transparency_colour, alternate_behind, col;
+    VIO_Colour               this_over_colour;
+    VIO_STR               colour_name;
     Real                 x_line_of_sight, y_line_of_sight, z_line_of_sight;
     Real                 x_up, y_up, z_up, bintree_factor;
     Real                 line_width_override;
     Real                 normal_ratio;
     int                  n_normal_iters, rc, bc, gc, ac;
-    Vector               line_of_sight, up_dir, rot_axis;
+    VIO_Vector               line_of_sight, up_dir, rot_axis;
     Real                 x_rot, y_rot, z_rot;
     BOOLEAN              view_specified, eye_specified, invert_flag;
-    Point                eye;
-    Colour               current_marker_colour;
+    VIO_Point                eye;
+    VIO_Colour               current_marker_colour;
     Real                 current_marker_size;
     Marker_types         current_marker_type;
     render_struct        render;
@@ -346,7 +346,7 @@ int  main(
                                          170, 170, 170
                                     };
 
-    Colour              colours16[16];
+    VIO_Colour              colours16[16];
     volume_info         vol_info;
     BOOLEAN             camera_space_flag;
 
@@ -777,7 +777,7 @@ int  main(
         }
         else if( equal_strings( argument, "-marker_colour" ) )
         {
-            STRING  colour_name;
+            VIO_STR  colour_name;
 
             if( !get_string_argument( NULL, &colour_name ) )
             {
@@ -868,7 +868,7 @@ int  main(
             render.composite_volume_flag = FALSE;
         else if( equal_strings( argument, "-bg" ) )
         {
-            STRING  colour_name;
+            VIO_STR  colour_name;
 
             if( !get_string_argument( NULL, &colour_name ) )
             {
@@ -881,7 +881,7 @@ int  main(
         }
         else if( equal_strings( argument, "-behind" ) )
         {
-            STRING  colour_name;
+            VIO_STR  colour_name;
 
             if( !get_string_argument( NULL, &colour_name ) )
             {
@@ -1303,10 +1303,10 @@ int  main(
                     Real  line_width;
 
                     line_width = (Real) get_lines_ptr(object)->line_thickness;
-                    for_less( c, 0, N_DIMENSIONS )
+                    for_less( c, 0, VIO_N_DIMENSIONS )
                     {
-                        Point_coord(min_pos,c) -= (Point_coord_type) line_width;
-                        Point_coord(max_pos,c) += (Point_coord_type) line_width;
+                        Point_coord(min_pos,c) -= (VIO_Point_coord_type) line_width;
+                        Point_coord(max_pos,c) += (VIO_Point_coord_type) line_width;
                     }
                 }
 
@@ -1470,14 +1470,14 @@ int  main(
 
 #define  TOLERANCE 1.0e-4
 
-private  void  define_view(
+static  void  define_view(
     view_struct   *view,
     BOOLEAN       perspective_flag,
     BOOLEAN       eye_specified,
-    Point         *eye,
+    VIO_Point         *eye,
     BOOLEAN       view_specified,
-    Vector        *line_of_sight,
-    Vector        *up_dir,
+    VIO_Vector        *line_of_sight,
+    VIO_Vector        *up_dir,
     Real          specified_window_width,
     Real          specified_perspective_distance,
     int           which_eye,
@@ -1485,16 +1485,16 @@ private  void  define_view(
     int           x_size,
     int           y_size,
     Real          pixel_aspect,
-    Point         *min_range,
-    Point         *max_range,
+    VIO_Point         *min_range,
+    VIO_Point         *max_range,
     Real          fit_factor )
 {
-    static  Vector  default_line_of_sight = { .77f, -.18f, -.6f };
-    static  Vector  default_up_dir = { .55f, .6f, .55f };
+    static  VIO_Vector  default_line_of_sight = { .77f, -.18f, -.6f };
+    static  VIO_Vector  default_up_dir = { .55f, .6f, .55f };
     int             c;
-    Vector          used_line_of_sight, used_up, offset;
+    VIO_Vector          used_line_of_sight, used_up, offset;
     Real            radius, aspect, window_size;
-    Point           centre;
+    VIO_Point           centre;
 
     if( view_specified )
     {
@@ -1503,14 +1503,14 @@ private  void  define_view(
     }
     else
     {
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
         {
             if( (Real) Point_coord(*min_range,c) >=
                 (Real) Point_coord(*max_range,c) - TOLERANCE )
                 break;
         }
 
-        if( c < N_DIMENSIONS )
+        if( c < VIO_N_DIMENSIONS )
         {
             fill_Vector( used_line_of_sight, 0.0f, 0.0f, 0.0f );
             fill_Vector( used_up, 0.0f, 0.0f, 0.0f );
@@ -1603,12 +1603,12 @@ private  void  define_view(
         view->stereo_offset = 0.0;
 }
 
-private  void  orient_lights(
+static  void  orient_lights(
     lights_struct   *lights,
     view_struct     *view )
 {
     int      i;
-    Vector   x_offset, y_offset, z_offset;
+    VIO_Vector   x_offset, y_offset, z_offset;
 
     for_less( i, 0, lights->n_lights )
     {
@@ -1630,10 +1630,10 @@ private  void  orient_lights(
     }
 }
 
-private  void  define_default_lights(
+static  void  define_default_lights(
     lights_struct   *lights )
 {
-    static  Vector  light_dir[] = { {  1.0f,  1.0f, -1.0f },
+    static  VIO_Vector  light_dir[] = { {  1.0f,  1.0f, -1.0f },
                                     { -1.0f,  1.0f, -1.0f },
                                     {  1.0f, -1.0f, -1.0f },
                                     { -1.0f, -1.0f, -1.0f } };
@@ -1651,10 +1651,10 @@ private  void  define_default_lights(
     }
 }
 
-private  void  prepare_objects(
+static  void  prepare_objects(
     int                 n_objects,
     object_struct       *objects[],
-    General_transform   *transform,
+    VIO_General_transform   *transform,
     Real                bintree_factor,
     Real                line_width_override )
 {
@@ -1662,7 +1662,7 @@ private  void  prepare_objects(
     object_struct           *object;
     object_traverse_struct  object_traverse;
     Real                    xt, yt, zt;
-    Point                   *points;
+    VIO_Point                   *points;
 
     initialize_object_traverse( &object_traverse, FALSE, n_objects, objects );
 
@@ -1713,12 +1713,12 @@ private  void  prepare_objects(
     }
 }
 
-private  BOOLEAN  equal_transforms(
-    General_transform  *t1,
-    General_transform  *t2 )
+static  BOOLEAN  equal_transforms(
+    VIO_General_transform  *t1,
+    VIO_General_transform  *t2 )
 {
     int        i, j;
-    Transform  *l1, *l2;
+    VIO_Transform  *l1, *l2;
 
     if( get_transform_type(t1) != LINEAR ||
         get_transform_type(t2) != LINEAR )
@@ -1735,12 +1735,12 @@ private  BOOLEAN  equal_transforms(
     return( TRUE );
 }
 
-private  Status  load_file(
-    STRING              filename,
-    General_transform   *transform,
+static  VIO_Status  load_file(
+    VIO_STR              filename,
+    VIO_General_transform   *transform,
     Real                bintree_factor,
     Real                line_width_override,
-    Colour              current_marker_colour,
+    VIO_Colour              current_marker_colour,
     Real                current_marker_size,
     Marker_types        current_marker_type,
     int                 *n_objects,
@@ -1789,9 +1789,9 @@ private  Status  load_file(
 
 static  struct
 {
-    STRING    name;
-    Vector    line_of_sight;
-    Vector    up_dir;
+    VIO_STR    name;
+    VIO_Vector    line_of_sight;
+    VIO_Vector    up_dir;
 }  preset_views[] = {
               { "top",    {  0.0f,  0.0f, -1.0f }, {  0.0f,  1.0f,  0.0f} },
               { "bottom", {  0.0f,  0.0f,  1.0f }, {  0.0f,  1.0f,  0.0f} },
@@ -1801,8 +1801,8 @@ static  struct
               { "front",  {  0.0f, -1.0f,  0.0f }, {  0.0f,  0.0f,  1.0f} }
                     };
 
-private  int  convert_string_to_view_index(
-    STRING    string )
+static  int  convert_string_to_view_index(
+    VIO_STR    string )
 {
     int   i, found_index;
 
@@ -1819,8 +1819,8 @@ private  int  convert_string_to_view_index(
     return( found_index );
 }
 
-private  BOOLEAN   string_is_preset_view(
-    STRING    string )
+static  BOOLEAN   string_is_preset_view(
+    VIO_STR    string )
 {
     int   ind;
 
@@ -1829,10 +1829,10 @@ private  BOOLEAN   string_is_preset_view(
     return( ind >= 0 );
 }
 
-private  void   get_preset_view(
-    STRING   string,
-    Vector   *line_of_sight,
-    Vector   *up_dir )
+static  void   get_preset_view(
+    VIO_STR   string,
+    VIO_Vector   *line_of_sight,
+    VIO_Vector   *up_dir )
 {
     int   ind;
 
@@ -1842,19 +1842,19 @@ private  void   get_preset_view(
     *up_dir = preset_views[ind].up_dir;
 }
 
-private  void  get_current_transform(
+static  void  get_current_transform(
     BOOLEAN            camera_space_flag,
     BOOLEAN            eye_specified,
-    Point              *eye,
+    VIO_Point              *eye,
     BOOLEAN            view_specified,
-    Vector             *line_of_sight,
-    Vector             *up_dir,
-    General_transform  *current_transform,
-    General_transform  *used_transform )
+    VIO_Vector             *line_of_sight,
+    VIO_Vector             *up_dir,
+    VIO_General_transform  *current_transform,
+    VIO_General_transform  *used_transform )
 {
-    Vector               x_axis, y_axis, z_axis;
-    Transform            to_bases, from_bases;
-    General_transform    from_bases_gen, to_bases_gen, new_transform;
+    VIO_Vector               x_axis, y_axis, z_axis;
+    VIO_Transform            to_bases, from_bases;
+    VIO_General_transform    from_bases_gen, to_bases_gen, new_transform;
 
     if( !camera_space_flag )
     {
