@@ -36,32 +36,32 @@
 static  VIO_Status  load_file(
     VIO_STR              filename,
     VIO_General_transform   *transform,
-    Real                bintree_factor,
-    Real                line_width_override,
+    VIO_Real                bintree_factor,
+    VIO_Real                line_width_override,
     VIO_Colour              current_marker_colour,
-    Real                current_marker_size,
+    VIO_Real                current_marker_size,
     Marker_types        current_marker_type,
     int                 *n_objects,
     object_struct       ***objects );
 
 static  void  define_view(
     view_struct   *view,
-    BOOLEAN       perspective_flag,
-    BOOLEAN       eye_specified,
+    VIO_BOOL       perspective_flag,
+    VIO_BOOL       eye_specified,
     VIO_Point         *eye,
-    BOOLEAN       view_specified,
+    VIO_BOOL       view_specified,
     VIO_Vector        *line_of_sight,
     VIO_Vector        *up_dir,
-    Real          specified_window_width,
-    Real          specified_perspective_distance,
+    VIO_Real          specified_window_width,
+    VIO_Real          specified_perspective_distance,
     int           which_eye,
-    Real          stereo_eye_offset,
+    VIO_Real          stereo_eye_offset,
     int           x_size,
     int           y_size,
-    Real          pixel_aspect,
+    VIO_Real          pixel_aspect,
     VIO_Point         *min_range,
     VIO_Point         *max_range,
-    Real          fit_factor );
+    VIO_Real          fit_factor );
 static  void  define_default_lights(
     lights_struct   *lights );
 static  void  orient_lights(
@@ -74,21 +74,21 @@ static  void  prepare_objects(
     int                 n_objects,
     object_struct       *objects[],
     VIO_General_transform   *transform,
-    Real                bintree_factor,
-    Real                line_width_override );
+    VIO_Real                bintree_factor,
+    VIO_Real                line_width_override );
 
 static  void   get_preset_view(
     VIO_STR   string,
     VIO_Vector   *line_of_sight,
     VIO_Vector   *up_dir );
 
-static  BOOLEAN   string_is_preset_view(
+static  VIO_BOOL   string_is_preset_view(
     VIO_STR    string );
 
-static  Real  get_Colour_intensity(
+static  VIO_Real  get_Colour_intensity(
     VIO_Colour   col )
 {
-    static   Real  coefs[] = { 0.3, 0.59, 0.11 };
+    static   VIO_Real  coefs[] = { 0.3, 0.59, 0.11 };
 
     return( coefs[0] * get_Colour_r_0_1(col) +
             coefs[1] * get_Colour_g_0_1(col) +
@@ -96,10 +96,10 @@ static  Real  get_Colour_intensity(
 }
 
 static  void  get_current_transform(
-    BOOLEAN            camera_space_flag,
-    BOOLEAN            eye_specified,
+    VIO_BOOL            camera_space_flag,
+    VIO_BOOL            eye_specified,
     VIO_Point              *eye,
-    BOOLEAN            view_specified,
+    VIO_BOOL            view_specified,
     VIO_Vector             *line_of_sight,
     VIO_Vector             *up_dir,
     VIO_General_transform  *current_transform,
@@ -109,8 +109,8 @@ typedef  struct
 {
     VIO_STR              filename;
     VIO_General_transform   transform;
-    Real                bintree_factor;
-    Real                line_width_override;
+    VIO_Real                bintree_factor;
+    VIO_Real                line_width_override;
     int                 n_objects;
     object_struct       **objects;
 } file_lookup;
@@ -271,10 +271,10 @@ int  main(
     char  *argv[] )
 {
     FILE                 *file;
-    BOOLEAN              crop_flag, clip_inside_flag;
-    BOOLEAN              over_colour_set, compute_normals;
-    BOOLEAN              reverse_order_colouring_flag;
-    BOOLEAN              perspective_flag, extend_volume_flag;
+    VIO_BOOL              crop_flag, clip_inside_flag;
+    VIO_BOOL              over_colour_set, compute_normals;
+    VIO_BOOL              reverse_order_colouring_flag;
+    VIO_BOOL              perspective_flag, extend_volume_flag;
     VIO_STR               dimension_names[] = { ANY_SPATIAL_DIMENSION,
                                                ANY_SPATIAL_DIMENSION,
                                                ANY_SPATIAL_DIMENSION };
@@ -286,13 +286,13 @@ int  main(
     int                  sizes[VIO_MAX_DIMENSIONS], n_lights;
     int                  axis, which;
     VIO_Point                min_pos, max_pos, min_range, max_range;
-    Real                 intensity, aspect, fit_factor, threshold;
-    Real                 fill_value;
-    BOOLEAN              fill_value_specified;
-    Real                 angle, shadow_offset;
+    VIO_Real                 intensity, aspect, fit_factor, threshold;
+    VIO_Real                 fill_value;
+    VIO_BOOL              fill_value_specified;
+    VIO_Real                 angle, shadow_offset;
     VIO_Transform            rotation, trans;
-    Real                 x_centre, y_centre, z_centre;
-    Real                 window_width, perspective_distance;
+    VIO_Real                 x_centre, y_centre, z_centre;
+    VIO_Real                 window_width, perspective_distance;
     VIO_Point                centre_of_rotation;
     VIO_General_transform    transform, new_transform, specified_transform;
     VIO_General_transform    used_transform;
@@ -303,26 +303,26 @@ int  main(
     lights_struct        lights;
     pixels_struct        pixels, pixels_tmp;
     Colour_coding_types  coding_type;
-    Real                 r, g, b, a, xv, yv, zv, a1, a2, a3;
-    Real                 colour_coding_min, colour_coding_max;
-    Real                 stereo_eye_offset;
+    VIO_Real                 r, g, b, a, xv, yv, zv, a1, a2, a3;
+    VIO_Real                 colour_coding_min, colour_coding_max;
+    VIO_Real                 stereo_eye_offset;
     int                  which_eye;
-    BOOLEAN              behind_specified;
+    VIO_BOOL              behind_specified;
     VIO_Colour               background_colour, colour, under_colour, over_colour;
     VIO_Colour               behind_transparency_colour, alternate_behind, col;
     VIO_Colour               this_over_colour;
     VIO_STR               colour_name;
-    Real                 x_line_of_sight, y_line_of_sight, z_line_of_sight;
-    Real                 x_up, y_up, z_up, bintree_factor;
-    Real                 line_width_override;
-    Real                 normal_ratio;
+    VIO_Real                 x_line_of_sight, y_line_of_sight, z_line_of_sight;
+    VIO_Real                 x_up, y_up, z_up, bintree_factor;
+    VIO_Real                 line_width_override;
+    VIO_Real                 normal_ratio;
     int                  n_normal_iters, rc, bc, gc, ac;
     VIO_Vector               line_of_sight, up_dir, rot_axis;
-    Real                 x_rot, y_rot, z_rot;
-    BOOLEAN              view_specified, eye_specified, invert_flag;
+    VIO_Real                 x_rot, y_rot, z_rot;
+    VIO_BOOL              view_specified, eye_specified, invert_flag;
     VIO_Point                eye;
     VIO_Colour               current_marker_colour;
-    Real                 current_marker_size;
+    VIO_Real                 current_marker_size;
     Marker_types         current_marker_type;
     render_struct        render;
     minc_input_options   options;
@@ -348,7 +348,7 @@ int  main(
 
     VIO_Colour              colours16[16];
     volume_info         vol_info;
-    BOOLEAN             camera_space_flag;
+    VIO_BOOL             camera_space_flag;
 
     set_alloc_checking( FALSE );
 
@@ -1300,9 +1300,9 @@ int  main(
                 if( get_object_type(object) == LINES )
                 {
                     int   c;
-                    Real  line_width;
+                    VIO_Real  line_width;
 
-                    line_width = (Real) get_lines_ptr(object)->line_thickness;
+                    line_width = (VIO_Real) get_lines_ptr(object)->line_thickness;
                     for_less( c, 0, VIO_N_DIMENSIONS )
                     {
                         Point_coord(min_pos,c) -= (VIO_Point_coord_type) line_width;
@@ -1413,9 +1413,9 @@ int  main(
         {
             for_less( x, 0, pixels.x_size )
             {
-                intensity = (Real) get_Colour_intensity(
+                intensity = (VIO_Real) get_Colour_intensity(
                                PIXEL_RGB_COLOUR( pixels, x, y ) );
-                print( "%c", gray_scale[ (int) (intensity * (Real) N_LEVELS)] );
+                print( "%c", gray_scale[ (int) (intensity * (VIO_Real) N_LEVELS)] );
             }
             print( "\n" );
         }
@@ -1472,28 +1472,28 @@ int  main(
 
 static  void  define_view(
     view_struct   *view,
-    BOOLEAN       perspective_flag,
-    BOOLEAN       eye_specified,
+    VIO_BOOL       perspective_flag,
+    VIO_BOOL       eye_specified,
     VIO_Point         *eye,
-    BOOLEAN       view_specified,
+    VIO_BOOL       view_specified,
     VIO_Vector        *line_of_sight,
     VIO_Vector        *up_dir,
-    Real          specified_window_width,
-    Real          specified_perspective_distance,
+    VIO_Real          specified_window_width,
+    VIO_Real          specified_perspective_distance,
     int           which_eye,
-    Real          stereo_eye_offset,
+    VIO_Real          stereo_eye_offset,
     int           x_size,
     int           y_size,
-    Real          pixel_aspect,
+    VIO_Real          pixel_aspect,
     VIO_Point         *min_range,
     VIO_Point         *max_range,
-    Real          fit_factor )
+    VIO_Real          fit_factor )
 {
     static  VIO_Vector  default_line_of_sight = { .77f, -.18f, -.6f };
     static  VIO_Vector  default_up_dir = { .55f, .6f, .55f };
     int             c;
     VIO_Vector          used_line_of_sight, used_up, offset;
-    Real            radius, aspect, window_size;
+    VIO_Real            radius, aspect, window_size;
     VIO_Point           centre;
 
     if( view_specified )
@@ -1505,8 +1505,8 @@ static  void  define_view(
     {
         for_less( c, 0, VIO_N_DIMENSIONS )
         {
-            if( (Real) Point_coord(*min_range,c) >=
-                (Real) Point_coord(*max_range,c) - TOLERANCE )
+            if( (VIO_Real) Point_coord(*min_range,c) >=
+                (VIO_Real) Point_coord(*max_range,c) - TOLERANCE )
                 break;
         }
 
@@ -1587,7 +1587,7 @@ static  void  define_view(
     view->y_viewport_size = y_size;
 
     aspect = pixel_aspect *
-             (Real) view->y_viewport_size / (Real) view->x_viewport_size;
+             (VIO_Real) view->y_viewport_size / (VIO_Real) view->x_viewport_size;
 
     view->window_width = window_size;
     view->window_height = window_size * aspect;
@@ -1596,7 +1596,7 @@ static  void  define_view(
 
     if( perspective_flag && which_eye != 0 && stereo_eye_offset != 0.0 )
     {
-        view->stereo_offset = (Real) which_eye / 2.0 * stereo_eye_offset /
+        view->stereo_offset = (VIO_Real) which_eye / 2.0 * stereo_eye_offset /
                               100.0 * view->window_distance;
     }
     else
@@ -1655,13 +1655,13 @@ static  void  prepare_objects(
     int                 n_objects,
     object_struct       *objects[],
     VIO_General_transform   *transform,
-    Real                bintree_factor,
-    Real                line_width_override )
+    VIO_Real                bintree_factor,
+    VIO_Real                line_width_override )
 {
     int                     i, n_points;
     object_struct           *object;
     object_traverse_struct  object_traverse;
-    Real                    xt, yt, zt;
+    VIO_Real                    xt, yt, zt;
     VIO_Point                   *points;
 
     initialize_object_traverse( &object_traverse, FALSE, n_objects, objects );
@@ -1672,9 +1672,9 @@ static  void  prepare_objects(
         for_less( i, 0, n_points )
         {
              general_transform_point( transform,
-                                      (Real) Point_x(points[i]),
-                                      (Real) Point_y(points[i]),
-                                      (Real) Point_z(points[i]),
+                                      (VIO_Real) Point_x(points[i]),
+                                      (VIO_Real) Point_y(points[i]),
+                                      (VIO_Real) Point_z(points[i]),
                                       &xt, &yt, &zt );
 
             fill_Point( points[i], xt, yt, zt );
@@ -1688,14 +1688,14 @@ static  void  prepare_objects(
 
             if( bintree_factor > 0.0 )
                 create_lines_bintree( get_lines_ptr(object),
-                   (int) ((Real) get_lines_ptr(object)->n_points * 5.0 *
+                   (int) ((VIO_Real) get_lines_ptr(object)->n_points * 5.0 *
                           bintree_factor) );
         }
         else if( get_object_type( object ) == POLYGONS )
         {
             if( bintree_factor > 0.0 )
                 create_polygons_bintree( get_polygons_ptr(object),
-                   (int) ((Real) get_polygons_ptr(object)->n_items *
+                   (int) ((VIO_Real) get_polygons_ptr(object)->n_items *
                           bintree_factor) );
         }
         else if( get_object_type( object ) == QUADMESH )
@@ -1707,13 +1707,13 @@ static  void  prepare_objects(
 
             if( bintree_factor > 0.0 )
                 create_quadmesh_bintree( get_quadmesh_ptr(object),
-                                         (int) ((Real) m * (Real) n *
+                                         (int) ((VIO_Real) m * (VIO_Real) n *
                                                  bintree_factor ) );
         }
     }
 }
 
-static  BOOLEAN  equal_transforms(
+static  VIO_BOOL  equal_transforms(
     VIO_General_transform  *t1,
     VIO_General_transform  *t2 )
 {
@@ -1738,10 +1738,10 @@ static  BOOLEAN  equal_transforms(
 static  VIO_Status  load_file(
     VIO_STR              filename,
     VIO_General_transform   *transform,
-    Real                bintree_factor,
-    Real                line_width_override,
+    VIO_Real                bintree_factor,
+    VIO_Real                line_width_override,
     VIO_Colour              current_marker_colour,
-    Real                current_marker_size,
+    VIO_Real                current_marker_size,
     Marker_types        current_marker_type,
     int                 *n_objects,
     object_struct       ***objects )
@@ -1819,7 +1819,7 @@ static  int  convert_string_to_view_index(
     return( found_index );
 }
 
-static  BOOLEAN   string_is_preset_view(
+static  VIO_BOOL   string_is_preset_view(
     VIO_STR    string )
 {
     int   ind;
@@ -1843,10 +1843,10 @@ static  void   get_preset_view(
 }
 
 static  void  get_current_transform(
-    BOOLEAN            camera_space_flag,
-    BOOLEAN            eye_specified,
+    VIO_BOOL            camera_space_flag,
+    VIO_BOOL            eye_specified,
     VIO_Point              *eye,
-    BOOLEAN            view_specified,
+    VIO_BOOL            view_specified,
     VIO_Vector             *line_of_sight,
     VIO_Vector             *up_dir,
     VIO_General_transform  *current_transform,
