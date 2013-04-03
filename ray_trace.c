@@ -128,7 +128,7 @@ Options are:\n\
 -size <x_size> <y_size> \n\
             : image size (default 300 300) \n\
 -window_width <width> \n\
-            : width of camera view (default ??) \n\
+            : width of camera view (default 3) \n\
 -aspect <aspect> \n\
             : aspect of image (default 1.0) \n\
 -scale <factor> \n\
@@ -549,7 +549,7 @@ int  main(
             if( input_volume( volume_filename, 3, dimension_names,
                               NC_UNSPECIFIED, FALSE, 0.0, 0.0,
                               TRUE, &vol_info.volume,
-                              &options ) != OK )
+                              &options ) != VIO_OK )
                 return( 1 );
 
             get_current_transform( camera_space_flag, eye_specified, &eye,
@@ -574,7 +574,7 @@ int  main(
             if( coding_type == USER_DEFINED_COLOUR_MAP )
             {
                 if( input_user_defined_colour_coding( &vol_info.colour_coding,
-                                                      user_def_filename ) != OK)
+                                                      user_def_filename ) != VIO_OK)
                 {
                     print_error( "Error in user defined colour map: %s\n",
                                  user_def_filename );
@@ -682,7 +682,7 @@ int  main(
 
                     axis = transform_filename[0] - 'x';
 
-                    make_rotation_transform( angle * DEG_TO_RAD, axis,
+                    make_rotation_transform( angle * VIO_DEG_TO_RAD, axis,
                                              &rotation );
                     make_transform_relative_to_point( &centre_of_rotation,
                                                       &rotation, &trans );
@@ -703,7 +703,7 @@ int  main(
                     }
 
                     fill_Vector( rot_axis, x_rot, y_rot, z_rot );
-                    make_rotation_about_axis( &rot_axis, angle * DEG_TO_RAD,
+                    make_rotation_about_axis( &rot_axis, angle * VIO_DEG_TO_RAD,
                                               &rotation );
 
                     make_transform_relative_to_point( &centre_of_rotation,
@@ -714,7 +714,7 @@ int  main(
                 else
                 {
                     if( input_transform_file( transform_filename,
-                                              &specified_transform ) !=OK )
+                                              &specified_transform ) !=VIO_OK )
                         return( 1 );
                 }
 
@@ -1135,9 +1135,9 @@ int  main(
             ray_object.colour = colour;
             get_default_surfprop( &ray_object.spr );
             get_volume_sizes( render.volumes[render.n_volumes-1].volume, sizes);
-            create_bitlist_3d( sizes[X], sizes[Y], sizes[Z],
+            create_bitlist_3d( sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
                                &ray_object.done_bits );
-            create_bitlist_3d( sizes[X], sizes[Y], sizes[Z],
+            create_bitlist_3d( sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
                                &ray_object.surface_bits );
             ray_object.clip.n_clip_objects = clip.n_clip_objects;
             if( clip.n_clip_objects > 0 )
@@ -1213,7 +1213,7 @@ int  main(
                                line_width_override,
                                current_marker_colour, current_marker_size,
                                current_marker_type,
-                               &n_objects_in_file, &file_objects ) != OK )
+                               &n_objects_in_file, &file_objects ) != VIO_OK )
                     return( 1 );
 
                 delete_general_transform( &used_transform );
@@ -1240,7 +1240,7 @@ int  main(
                            &used_transform, bintree_factor, line_width_override,
                            current_marker_colour, current_marker_size,
                            current_marker_type,
-                           &n_objects_in_file, &file_objects ) != OK )
+                           &n_objects_in_file, &file_objects ) != VIO_OK )
                 return( 1 );
 
             delete_general_transform( &used_transform );
@@ -1449,10 +1449,10 @@ int  main(
             (void) output_rgb_file( output_file, &pixels );
         else
         {
-            if( open_file( output_file, WRITE_FILE, BINARY_FORMAT, &file )!= OK)
+            if( open_file( output_file, WRITE_FILE, BINARY_FORMAT, &file )!= VIO_OK)
                 return( 1 );
 
-            if( io_pixels( file, WRITE_FILE, BINARY_FORMAT, &pixels ) != OK )
+            if( io_pixels( file, WRITE_FILE, BINARY_FORMAT, &pixels ) != VIO_OK )
                 return( 1 );
 
             (void) close_file( file );
@@ -1517,12 +1517,12 @@ static  void  define_view(
             Vector_coord( used_line_of_sight, c ) = -1.0f;
             switch( c )
             {
-            case X:
-            case Y:
-                Vector_coord( used_up, Z ) = 1.0f;
+            case VIO_X:
+            case VIO_Y:
+                Vector_coord( used_up, VIO_Z ) = 1.0f;
                 break;
-            case Z:
-                Vector_coord( used_up, Y ) = 1.0f;
+            case VIO_Z:
+                Vector_coord( used_up, VIO_Y ) = 1.0f;
                 break;
             }
         }
@@ -1640,7 +1640,7 @@ static  void  define_default_lights(
     int      i;
 
     lights->ambient_light = make_Colour_0_1( 0.3, 0.3, 0.3 );
-    lights->n_lights = SIZEOF_STATIC_ARRAY( light_dir );
+    lights->n_lights = VIO_SIZEOF_STATIC_ARRAY( light_dir );
     ALLOC( lights->lights, lights->n_lights );
     for_less( i, 0, lights->n_lights )
     {
@@ -1771,8 +1771,8 @@ static  VIO_Status  load_file(
 
         if( input_objects_any_format( NULL, filename, current_marker_colour,
                                       current_marker_size, current_marker_type,
-                                      &entry.n_objects, &entry.objects ) != OK )
-            return( ERROR );
+                                      &entry.n_objects, &entry.objects ) != VIO_OK )
+            return( VIO_ERROR );
 
         ADD_ELEMENT_TO_ARRAY( files_read, n_files_read, entry, 1 );
 
@@ -1784,7 +1784,7 @@ static  VIO_Status  load_file(
     *n_objects = files_read[i].n_objects;
     *objects = files_read[i].objects;
 
-    return( OK );
+    return( VIO_OK );
 }
 
 static  struct
@@ -1807,7 +1807,7 @@ static  int  convert_string_to_view_index(
     int   i, found_index;
 
     found_index = -1;
-    for_less( i, 0, SIZEOF_STATIC_ARRAY( preset_views ) )
+    for_less( i, 0, VIO_SIZEOF_STATIC_ARRAY( preset_views ) )
     {
         if( equal_strings( &string[1], preset_views[i].name ) )
         {

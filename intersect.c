@@ -2,11 +2,11 @@
 
 static  void  interpolate_over_polygon(
     VIO_Point        *point,
-    int          n_points,
+    int              n_points,
     VIO_Point        points[],
-    BOOLEAN      flat_shading_flag,
+    VIO_BOOL         flat_shading_flag,
     VIO_Vector       normals[],
-    Colour_flags colour_flag,
+    Colour_flags     colour_flag,
     VIO_Colour       colours[],
     VIO_Vector       *normal,
     VIO_Colour       *colour )
@@ -54,11 +54,11 @@ static  void  interpolate_over_polygon(
         *colour = make_rgba_Colour_0_1( r, g, b, a );
 }
 
-  BOOLEAN  ray_intersects_a_polygon(
+  VIO_BOOL  ray_intersects_a_polygon(
     VIO_Point            *origin,
     VIO_Vector           *direction,
     object_struct    *object,
-    BOOLEAN          flat_shading_flag,
+    VIO_BOOL          flat_shading_flag,
     VIO_Point            *point,
     VIO_Vector           *normal,
     VIO_Colour           *colour,
@@ -69,7 +69,7 @@ static  void  interpolate_over_polygon(
     VIO_Point            points[MAX_POINTS_PER_POLYGON];
     VIO_Vector           normals[MAX_POINTS_PER_POLYGON];
     VIO_Colour           colours[MAX_POINTS_PER_POLYGON];
-    BOOLEAN          found;
+    VIO_BOOL          found;
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
@@ -107,11 +107,11 @@ static  void  interpolate_over_polygon(
     return( found );
 }
 
-  BOOLEAN  ray_intersects_a_quadmesh(
+  VIO_BOOL  ray_intersects_a_quadmesh(
     VIO_Point            *origin,
     VIO_Vector           *direction,
     object_struct    *object,
-    BOOLEAN          flat_shading_flag,
+    VIO_BOOL          flat_shading_flag,
     VIO_Point            *point,
     VIO_Vector           *normal,
     VIO_Colour           *colour,
@@ -123,7 +123,7 @@ static  void  interpolate_over_polygon(
     VIO_Point            points[4];
     VIO_Vector           normals[4];
     VIO_Colour           colours[4];
-    BOOLEAN          found;
+    VIO_BOOL          found;
 
     found = intersect_ray_with_object( origin, direction, object,
                                        &object_index, dist,
@@ -190,7 +190,7 @@ static  VIO_Real   get_line_alpha(
     return( alpha );
 }
 
-  BOOLEAN  ray_intersects_a_line(
+  VIO_BOOL  ray_intersects_a_line(
     VIO_Point            *origin,
     VIO_Vector           *direction,
     object_struct    *object,
@@ -201,7 +201,7 @@ static  VIO_Real   get_line_alpha(
 {
     int           line, seg, p1, p2, object_index;
     VIO_Real          alpha, r1, g1, b1, a1, r2, g2, b2, a2;
-    BOOLEAN       found;
+    VIO_BOOL       found;
     VIO_Point         centre, point1, point2;
     lines_struct  *lines;
 
@@ -254,7 +254,7 @@ static  VIO_Real   get_line_alpha(
     return( found );
 }
 
-  BOOLEAN  ray_intersects_a_marker(
+  VIO_BOOL  ray_intersects_a_marker(
     VIO_Point            *origin,
     VIO_Vector           *direction,
     object_struct    *object,
@@ -265,7 +265,7 @@ static  VIO_Real   get_line_alpha(
 {
     VIO_Real           orig, delta, t_min, t_max, t1, t2, pos1, pos2;
     int            object_index, dim;
-    BOOLEAN        found;
+    VIO_BOOL        found;
     marker_struct  *marker;
 
     marker = get_marker_ptr( object );

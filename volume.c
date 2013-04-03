@@ -5,17 +5,17 @@
 
 /* ARGSUSED */
 
-static  BOOLEAN  search_volume(
+static  VIO_BOOL  search_volume(
     VIO_Volume             volume,
     int                continuity,
     bitlist_3d_struct  *done_bits,
     bitlist_3d_struct  *surface_bits,
-    Real               threshold,
+    VIO_Real               threshold,
     VIO_Point              *origin,
     VIO_Vector             *direction,
-    Real               t_min,
-    Real               t_max,
-    Real               *t )
+    VIO_Real               t_min,
+    VIO_Real               t_max,
+    VIO_Real               *t )
 {
     boundary_definition_struct   boundary_def;
 
@@ -34,49 +34,49 @@ static  BOOLEAN  search_volume(
                                         &boundary_def, t ) );
 }
 
-  BOOLEAN  ray_intersects_a_volume(
+  VIO_BOOL  ray_intersects_a_volume(
     VIO_Point              *origin,
     VIO_Vector             *direction,
     VIO_Volume             volume,
     int                continuity,
     bitlist_3d_struct  *done_bits,
     bitlist_3d_struct  *surface_bits,
-    Real               threshold,
+    VIO_Real               threshold,
     VIO_Point              *point,
     VIO_Vector             *normal,
-    Real               *dist )
+    VIO_Real               *dist )
 {
     int      sizes[VIO_MAX_DIMENSIONS];
-    Real     t, t_min, t_max, xw, yw, zw;
-    Real     voxel[VIO_MAX_DIMENSIONS];
-    Real     voxel_origin[VIO_MAX_DIMENSIONS];
-    Real     voxel_direction[VIO_MAX_DIMENSIONS];
-    Real     value, dx, dy, dz;
+    VIO_Real     t, t_min, t_max, xw, yw, zw;
+    VIO_Real     voxel[VIO_MAX_DIMENSIONS];
+    VIO_Real     voxel_origin[VIO_MAX_DIMENSIONS];
+    VIO_Real     voxel_direction[VIO_MAX_DIMENSIONS];
+    VIO_Real     value, dx, dy, dz;
     VIO_Point    p_origin, int_point;
     VIO_Vector   p_direction;
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     convert_world_to_voxel( volume,
-                            (Real) Point_x(*origin),
-                            (Real) Point_y(*origin),
-                            (Real) Point_z(*origin), voxel_origin );
+                            (VIO_Real) Point_x(*origin),
+                            (VIO_Real) Point_y(*origin),
+                            (VIO_Real) Point_z(*origin), voxel_origin );
 
     convert_world_vector_to_voxel( volume,
-                                   (Real) Vector_x(*direction),
-                                   (Real) Vector_y(*direction),
-                                   (Real) Vector_z(*direction),
+                                   (VIO_Real) Vector_x(*direction),
+                                   (VIO_Real) Vector_y(*direction),
+                                   (VIO_Real) Vector_z(*direction),
                                    voxel_direction );
 
-    fill_Point( p_origin, voxel_origin[X], voxel_origin[Y], voxel_origin[Z] );
-    fill_Vector( p_direction, voxel_direction[X], voxel_direction[Y],
-                 voxel_direction[Z] );
+    fill_Point( p_origin, voxel_origin[VIO_X], voxel_origin[VIO_Y], voxel_origin[VIO_Z] );
+    fill_Vector( p_direction, voxel_direction[VIO_X], voxel_direction[VIO_Y],
+                 voxel_direction[VIO_Z] );
 
     get_volume_sizes( volume, sizes );
 
     if( !clip_line_to_box( &p_origin, &p_direction,
-                           0.0, (Real) sizes[X]-1.0,
-                           0.0, (Real) sizes[Y]-1.0,
-                           0.0, (Real) sizes[Z]-1.0,
+                           0.0, (VIO_Real) sizes[VIO_X]-1.0,
+                           0.0, (VIO_Real) sizes[VIO_Y]-1.0,
+                           0.0, (VIO_Real) sizes[VIO_Z]-1.0,
                            &t_min, &t_max ) )
     {
         t_min = 0.0;
@@ -98,9 +98,9 @@ static  BOOLEAN  search_volume(
     {
         GET_POINT_ON_RAY( int_point, p_origin, p_direction, t );
 
-        voxel[X] = (Real) Point_x( int_point );
-        voxel[Y] = (Real) Point_y( int_point );
-        voxel[Z] = (Real) Point_z( int_point );
+        voxel[VIO_X] = (VIO_Real) Point_x( int_point );
+        voxel[VIO_Y] = (VIO_Real) Point_y( int_point );
+        voxel[VIO_Z] = (VIO_Real) Point_z( int_point );
 
         convert_voxel_to_world( volume, voxel, &xw, &yw, &zw );
 
@@ -134,7 +134,7 @@ static  BOOLEAN  search_volume(
     VIO_Point     *max_point )
 {
     int      i, j, k, sizes[VIO_MAX_DIMENSIONS];
-    Real     voxel[VIO_MAX_DIMENSIONS], xw, yw, zw;
+    VIO_Real     voxel[VIO_MAX_DIMENSIONS], xw, yw, zw;
     VIO_Point    pos;
 
     get_volume_sizes( volume, sizes );
@@ -142,21 +142,21 @@ static  BOOLEAN  search_volume(
     for_less( i, 0, 2 )
     {
         if( i == 0 )
-            voxel[X] = 0.0;
+            voxel[VIO_X] = 0.0;
         else
-            voxel[X] = (Real) sizes[X] - 1.0;
+            voxel[VIO_X] = (VIO_Real) sizes[VIO_X] - 1.0;
         for_less( j, 0, 2 )
         {
             if( j == 0 )
-                voxel[Y] = 0.0;
+                voxel[VIO_Y] = 0.0;
             else
-                voxel[Y] = (Real) sizes[Y] - 1.0;
+                voxel[VIO_Y] = (VIO_Real) sizes[VIO_Y] - 1.0;
             for_less( k, 0, 2 )
             {
                 if( k == 0 )
-                    voxel[Z] = 0.0;
+                    voxel[VIO_Z] = 0.0;
                 else
-                    voxel[Z] = (Real) sizes[Z] - 1.0;
+                    voxel[VIO_Z] = (VIO_Real) sizes[VIO_Z] - 1.0;
 
                 convert_voxel_to_world( volume, voxel, &xw, &yw, &zw );
                 fill_Point( pos, xw, yw, zw );
