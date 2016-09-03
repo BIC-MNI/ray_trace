@@ -350,8 +350,6 @@ int  main(
     volume_info         vol_info;
     VIO_BOOL             camera_space_flag;
 
-    set_alloc_checking( FALSE );
-
     initialize_argument_processing( argc, argv );
 
     for_less( i, 0, 16 )
@@ -1460,8 +1458,6 @@ int  main(
     }
 
     delete_pixels( &pixels );
-
-    output_alloc_to_file( ".alloc_stats" );
 
     return( 0 );
 }
