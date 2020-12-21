@@ -1,3 +1,6 @@
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include  <ray_trace.h>
 #include  <bicpl/images.h>
 
@@ -142,22 +145,22 @@ Options are:\n\
             : ambient light (default 0.3 0.3 0.3) \n\
 -directional <x> <y> <z> <r> <g> <b> \n\
             : define the direction x y z of the light and its rgb components \n\
-              (default ??) \n\
+              (default ?) \n\
 -point <nx> <ny> <nz> <r> <g> <b> <ax> <ay> <az> \n\
             : define the direction x y z of the light and its rgb components, \n\
-              with attenuation factors ax ay az (default ??) \n\
+              with attenuation factors ax ay az (default ?) \n\
 -persp | -ortho \n\
             : perspective or orthographic view (default -persp) \n\
 -perspective_distance <dist> \n\
-            : distance from viewpoint in perspective view (default ??) \n\
+            : distance from viewpoint in perspective view (default ?) \n\
 -camera | -model \n\
-            : ????? (default -model) \n\
+            : ? (default -model) \n\
 -left_eye | -right_eye \n\
             : look from left or right eye (default is center) \n\
 -eye_separation <offset> \n\
             : separation distance between eyes (default 7.0) \n\
 -eye <nx> <ny> <nz> \n\
-            : eyepoint oriention (default ??) \n\
+            : eyepoint oriention (default ?) \n\
 -shadows | -noshadows \n\
             : enable shadows or not (default -noshadows) \n\
 -shadow_offset <offset> \n\
@@ -223,7 +226,7 @@ Options are:\n\
 -marker_size <size> \n\
             : size of the marker symbol (default 1) \n\
 -line_width <width> \n\
-            : line thickness for drawing line objects (default ??) \n\
+            : line thickness for drawing line objects (default ?) \n\
 \n\
 -top | -bottom | -left | -right | -back | -front \n\
             : view orientation for surfaces (default - see -view)\n\

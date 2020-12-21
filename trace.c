@@ -1,3 +1,6 @@
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include  <ray_trace.h>
 
 static  VIO_BOOL  ray_intersects_objects(
