@@ -1,0 +1,37 @@
+# Citation metadata for ray_trace (Citation File Format, https://citation-file-format.github.io/).
+# The author list comes from the commit history and from the history comments in the files.
+
+cff-version: 1.2.0
+title: ray_trace
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: David
+    family-names: MacDonald
+  - given-names: Jason
+    family-names: Lerch
+    orcid: "https://orcid.org/0000-0001-6164-2881"
+  - given-names: Vladimir
+    family-names: Fonov
+    email: vladimir.fonov@gmail.com
+    affiliation: McGill University
+    orcid: "https://orcid.org/0000-0003-3402-7749"
+  - given-names: Claude
+    family-names: Lepage
+  - given-names: Andrew L.
+    family-names: Janke
+    orcid: "https://orcid.org/0000-0003-0547-5171"
+  - given-names: Robert D.
+    family-names: Vincent
+repository-code: "https://github.com/BIC-MNI/ray_trace"
+abstract: >-
+  ray_trace: ray tracing program for 3D visualisation of MINC volumes and BIC
+  geometric objects.
+keywords:
+  - MINC
+  - medical imaging
+  - neuroimaging
+  - visualization
+  - ray tracing
+license-url: "https://github.com/BIC-MNI/ray_trace/blob/master/COPYING"
